@@ -1,7 +1,5 @@
-#Robot Line Follower ESP32
-#Deskripsi Singkat
-
-#Robot line follower ini dirancang menggunakan mikrokontroler ESP32 dual-core dan dilengkapi dengan berbagai sensor serta aktuator untuk mendeteksi garis dan menggerakkan robot. Robot ini mampu mengikuti garis, melakukan berbagai aksi, dan dapat dikonfigurasi melalui antarmuka pengguna.
+# Robot Line Follower ESP32
+Robot line follower ini dirancang menggunakan mikrokontroler ESP32 dual-core dan dilengkapi dengan berbagai sensor serta aktuator untuk mendeteksi garis dan menggerakkan robot. Robot ini mampu mengikuti garis, melakukan berbagai aksi, dan dapat dikonfigurasi melalui antarmuka pengguna.
 
 # Flowchart
     Inisialisasi:
@@ -44,15 +42,14 @@
 
 # Pengembangan Lebih Lanjut
 
-    Penambahan Sensor:
-        Ultrasonic sensor untuk deteksi jarak
-        Kamera untuk pengenalan objek
+    Penambahan Fitur:
+        Penambahan Fitur Transfer Plan
+        Penambahan Fitur OTA (Upload Program Tanpa Kabel)  
+        Penambahan Fitur Mode Transporter 
     Algoritma:
         Implementasi algoritma PID untuk kontrol motor yang lebih presisi
-        Penggunaan algoritma pencarian jalur optimal
-    Antarmuka:
-        Pengembangan aplikasi mobile untuk kontrol jarak jauh
-        Integrasi dengan sistem IoT
+        Penggunaan algoritma pencarian jalur otomatis 
+   
 #1. Instruksi Penggunaan
 
     Persiapan:
