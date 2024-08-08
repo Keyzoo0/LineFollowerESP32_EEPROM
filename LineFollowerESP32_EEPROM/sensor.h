@@ -21,4 +21,15 @@ int16_t minVal[14];
 int16_t setMaxVal[14];
 int16_t setMinVal[14];
 
+SimpleKalmanFilter kalmanFilters[14] = {
+    {1, 2, 0.2}, {1, 2, 0.2}, {1, 2, 0.2}, {1, 2, 0.2},
+    {1, 2, 0.2}, {1, 2, 0.2}, {1, 2, 0.2}, {1, 2, 0.2},
+    {1, 2, 0.2}, {1, 2, 0.2}, {1, 2, 0.2}, {1, 2, 0.2},
+    {1, 2, 0.2}, {1, 2, 0.2}
+};
+
+float filteredVal[14]; // Menyimpan nilai yang telah difilter
+
+
+
   

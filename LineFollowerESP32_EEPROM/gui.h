@@ -13,3 +13,7 @@ byte halIdx = 0;
 byte menuCount = 0;
 byte IdIdx;
 byte profilePid;
+
+const char* set[] = {"OFF" , "ON"};
+const char* mode_lf[] = {"TRANSPORTER" , "LINE TRACER"};
+const char* set_wifi[] = {"Disconnect" , "Connected"};
