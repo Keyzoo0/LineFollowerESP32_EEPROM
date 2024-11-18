@@ -1,7 +1,9 @@
-void guiResetPlan(byte selectPlan){
 
+void guiSetDefault(){
+ 
 oledClear();
 byte steps = 1;
+byte selectPlan = 0;
 menuCount = 0;  
 while (1) {
   headUp(true, false);
@@ -10,10 +12,10 @@ while (1) {
     break;
   }
   if (steps == 1) {
-    sprintf(buff, " Yakin menghapus P%d ?", selectPlan + 1);
-    lcd_char(1, 0, 15, buff, true, false, false);
-    lcd_char(1, 20, 35, "Iya ", true, false, false);
-    lcd_char(1, 70, 35, "Tidak", true, false, false);
+    sprintf(buff, "Set Default Robot?");
+    lcd_char(1, 15, 15, buff, true, false, false);
+    lcd_char(1, 20, 35, "Yes", true, false, false);
+    lcd_char(1, 70, 35, "Cancel", true, false, false);
     if(touchUp(Button_UP)){
       menuCount++;
       if(menuCount > 1) menuCount = 0;
@@ -22,7 +24,7 @@ while (1) {
       menuCount--;
       if(menuCount == 255) menuCount = 1;
     }
-   
+  
     if(menuCount == 1){
       lcd.drawRoundRect(18, 33, 22, 12, 2, SH110X_WHITE);
       if(touchUp(Button_OK)) steps = 2;
@@ -31,11 +33,18 @@ while (1) {
       if(touchUp(Button_OK)) {
         lcd.clearDisplay();
         break;
-      }
+        }
     }
   }
   else if (steps == 2) {
-     for (byte i = 0; i < VAL_INDEX; i++) {
+    for(int selectPlan = 0 ; selectPlan < VAL_PLAN ; selectPlan++ ){
+    // reset home 
+    plan = 0;
+    normalSpeed = 120;
+    stopIndex = 0;
+    countCP = 0;  
+    //reset all index at all plan
+      for (byte i = 0; i < VAL_INDEX; i++) {
         idx[selectPlan][i] = 0;
         logic[selectPlan][i] = 0;
         sensLogIdx[selectPlan][i] = 1;
@@ -51,22 +60,31 @@ while (1) {
         pidProfile[selectPlan][i] = 3;
         modeTIM[selectPlan][i] = 0;
         modeSens[selectPlan][i] = 0;
-        
+
       }
 
+       for (byte i = 0; i < VAL_CHECKP; i++) {
+         readCCheckpoint[selectPlan][i] = 0;
+         iDelayCheckpoint[selectPlan][i] = 0;
+         timerACheckpoint[selectPlan][i] = 0;
+         readIdxCheckpoint[selectPlan][i] = 0; 
+       }
+    
+    }    
+     
+     
     delay(50);
     steps = 3;
   }
   else if (steps == 3) {
     headUp(true, false);
-    sprintf(buff , "P%d Terhapus!!" , selectPlan+1);
-    lcd_char(1, 20 , 35, buff , true, false, false);
+    lcd_char(1, 35, 35, "Selesai!!", true, false, false);
     saveAll();
     lcd.display();
-    delay(2000);
-    lcd.clearDisplay();
+    delay(1000);
+    lcd.clearDisplay(); 
     break;
   }
   lcd.display();
-} // end bracket while true
+  }
 }

@@ -37,18 +37,3 @@ bool touchDown(int button , int del) {
   
   return val ;
 }
-
-// // PR press up
-// bool pressUp (int button){
-//   lastStatePress =  currentStatePress;
-//   currentStatePress = touchDown(button);
-//   if(lastStatePress == false && currentStatePress == true) pressTime = millis();
-//   else if(lastStatePress == true && currentStatePress == false) releaseTime = millis();
-
-//   long rangeTime = releaseTime - pressTime;
-//   if(rangeTime > LONG_TIME_PRESS){
-//     return true;
-//   }
-//   lastStatePress = currentStatePress;
-//   return false;
-// }

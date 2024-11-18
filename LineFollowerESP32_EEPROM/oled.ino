@@ -27,7 +27,7 @@ void oledClear()
 void dispSensor(unsigned int sens) {
   //  int sens = readSensor();
   for (int i = 0; i < 14; i++) {
-    if ((sens << i) & 0b10000000000000) {
+    if ((sens << i) & 0b10000000000000){
       lcd.fillRect(17 + (7 * i), 15, 5, 13, SH110X_WHITE);
     } else {
       lcd.fillRect(17 + (7 * i), 15, 5, 13, SH110X_BLACK);
@@ -48,18 +48,26 @@ void dispSensorIdx(unsigned int sens) {
   }
 }
 
-unsigned long prevTimeHead;
-float dumpBat;
 
 void headUp(bool clr , bool show) {
   if (clr) lcd.clearDisplay();
-  if (millis() - prevTimeHead >= 1000) {
-    dumpBat = readBattery();
-    prevTimeHead = millis();
+  dumpBat = readBattery();
+  // sprintf(buff, "%2.1f", dumpBat);
+  int persen = 0 ;
+  if(dumpBat > 11.8){
+  persen = (dumpBat - 11.8) * 100  / 1.5 ;                                                   ;
+  }else{
+  lcd_char(0, 115, 1, "x"  , true, false, false);
   }
-  sprintf(buff, "%02.1fV", dumpBat);
-  lcd_char(1, 1, 1, buff, true, false, false);
-  lcd_char(1, 60, 1, "EEPROM G13", true, false, false);
+
+  sprintf(buff, "%3d", persen);
+
+  lcd_char(1, 90, 1, buff  , true, false, false);
+  lcd_char(1, 1 , 1, "EEPROM G14", true, false, false);
+  lcd.drawRoundRect(111, 1 , 14 , 8 , 2 , SH110X_WHITE);
+  lcd.fillRoundRect(125, 3 , 1 , 4 , 0 , SH110X_WHITE);
+  lcd.fillRoundRect(113, 3 , persen/10 , 4 , 0 , SH110X_WHITE);
+
   lcd.drawLine(0, 12, 128, 12, SH110X_WHITE);
   if (show)lcd.display();
 }
@@ -68,7 +76,6 @@ void headUpIdx(bool clr , bool show) {
   if (clr) lcd.clearDisplay();
   sprintf(buff, "Set P:%d-Idx:%02d", plan + 1, countIdx);
   lcd_char(1, 1, 1, buff, true, false, false);
-  lcd_char(1, 100, 1, " G13", true, false, false);
   lcd.drawLine(0, 12, 128, 12, SH110X_WHITE);
   if (show)lcd.display();
 }

@@ -10,6 +10,39 @@ void guiTransferPlan(){
       lcd.display();
     if(touchUp(Button_RUN)){
       break;
+    }
+    if(touchUp(Button_UP)){
+      guiReceive();
+    }
+    if(touchUp(Button_PLUS)){
+      guiTransmit();
     } 
+
   }
 }
+
+void guiReceive(){
+  oledClear();
+  while(1){
+    if(touchUp(Button_RUN)){
+      oledClear();
+      break;
+    }
+    lcd_char(1, 12, 20, "Lagi Recieve Bang !", true, false, false);
+    lcd.display();
+  }
+}
+
+void guiTransmit(){
+  oledClear();
+  while(1){
+    if(touchUp(Button_RUN)){
+      oledClear();
+      break;
+    }
+    lcd_char(1, 12, 20, "Lagi Transmit Bang !", true, false, false);
+    lcd.display();
+
+  }
+}
+  

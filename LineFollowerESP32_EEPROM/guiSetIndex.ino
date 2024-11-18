@@ -4,7 +4,7 @@ void setIDX() {
   initEncoder(true);
   menuIdx=1;
   while (1) {
-    lcd_char(1, 38, 5, "Plan - " + String(plan+1) , true , false , true);
+    lcd_char(1, 38, 5, "Plan -  " +  String(plan+1) , true , false , true);
     if (touchUp(Button_UP)) {
       menuIdx++;
       if (menuIdx > 4) menuIdx = 1;
@@ -13,10 +13,13 @@ void setIDX() {
       menuIdx--;
       if (menuIdx < 1) menuIdx = 4;
     }
-    if (touchUp(Button_RUN)) {
+    if (touchDown(Button_RUN , 100)) {
       menuIdx = selectSet = halIdx = menuCount = 0;
-      saveIdxAll();
+      lcd.clearDisplay();
+      saveAll();
+      delay(10);
       break;
+     
     }
 
     if (menuIdx == 1) {
@@ -25,6 +28,8 @@ void setIDX() {
         countIdx = 0;
         halIdx = 1;
         stateIdxM = true;
+        selectSet = 255;
+
       }
       lcd.fillRoundRect(2, 18, 60, 15, 3,  SH110X_WHITE);
       lcd_char(1, 5, 23, "(00 - 24)", false , false, false);
@@ -40,41 +45,46 @@ void setIDX() {
         countIdx = 25;
         halIdx = 1;
         stateIdxM = true;
+        selectSet = 255;
+
       }
  
       lcd.fillRoundRect(65, 18, 60, 15, 3,  SH110X_WHITE);
-      lcd_char(1, 68, 23, "(25 - 30)", false , false, false);
+      lcd_char(1, 68, 23, "(25 - 49)", false , false, false);
     } else {
       lcd.fillRoundRect(65, 18, 60, 15, 3,  SH110X_BLACK);
-      lcd_char(1, 68, 23, "(25 - 30)", true , false , true);
+      lcd_char(1, 68, 23, "(25 - 49)", true , false , true);
     }
 
     if (menuIdx == 3) {
       if (touchUp(Button_OK)) {
         IdIdx = 2;
-        countIdx = 51;
+        countIdx = 50;
         halIdx = 1;
         stateIdxM = true;
+        selectSet = 255;
+
       }
      lcd.fillRoundRect(2, 40, 60, 15, 3,  SH110X_WHITE);
-      lcd_char(1, 5, 45, "(51 - 75)", false , false, false);
+      lcd_char(1, 5, 45, "(50 - 74)", false , false, false);
     } else {
       lcd.fillRoundRect(2, 40, 60, 15, 3,  SH110X_BLACK);
-      lcd_char(1, 5, 45, "(51 - 75)", true , false , true); 
+      lcd_char(1, 5, 45, "(50 - 74)", true , false , true); 
     }
 
     if (menuIdx == 4) {
       if (touchUp(Button_OK)) {
         IdIdx = 3;
-        countIdx = 76;
+        countIdx = 75;
         halIdx = 1;
         stateIdxM = true;
+        selectSet = 255;
       }
       lcd.fillRoundRect(65, 40, 60, 15, 3,  SH110X_WHITE);
-      lcd_char(1, 68, 45, "(76 - 99)", false , false, false);
+      lcd_char(1, 68, 45, "(75 - 99)", false , false, false);
     } else {
       lcd.fillRoundRect(65, 40, 60, 15, 3,  SH110X_BLACK);
-      lcd_char(1, 68, 45, "(76 - 99)", true , false , true);
+      lcd_char(1, 68, 45, "(75 - 99)", true , false , true);
     }
 
     while (stateIdxM) {
@@ -113,20 +123,20 @@ void setIDX() {
 
         switch (IdIdx) {
           case 0:
-            if (countIdx >= 24) countIdx = 24;
-            else if ( countIdx <= 0) countIdx = 0;
+            if (countIdx == 25) countIdx = 0;
+            else if ( countIdx == 255) countIdx = 24;
             break;
           case 1:
-            if (countIdx >= 50) countIdx = 50;
-            else if (countIdx <= 25) countIdx = 25;
+            if (countIdx > 49) countIdx = 25;
+            else if (countIdx < 25) countIdx = 49;
             break;
           case 2:
-            if (countIdx >= 75) countIdx = 75;
-            else if (countIdx <= 51) countIdx = 51;
+            if (countIdx > 74) countIdx = 50;
+            else if (countIdx < 50) countIdx = 74;
             break;
           case 3:
-            if (countIdx >= 99) countIdx = 99;
-            else if (countIdx <= 76) countIdx = 76;
+            if (countIdx > 99) countIdx = 75;
+            else if (countIdx < 75) countIdx = 99;
             break;
         }
 
@@ -320,6 +330,7 @@ void setIDX() {
         }
 
         if (selectSet == 1) {
+          
           if (touchUp(Button_OK)) {
             if (++menuCount > 3) menuCount = 1;
           }
@@ -352,11 +363,17 @@ void setIDX() {
             }
           lcd.drawRect(98, 23, 25, 11, SH110X_WHITE);
           if(modeTIM[plan][countIdx] == 1){
+            initEncoder(true);
             timerA[plan][countIdx] = measureLengthR();
           } else if(modeTIM[plan][countIdx] == 2){
+            initEncoder(true);
             timerA[plan][countIdx] = measureLengthL();
             }
+          }else{ 
+            initEncoder(false);
           }
+
+
           
           lcd_char(1, 25, 15, "Then Set SA", true, false, false);
           sprintf(buff, "V:%03d T:%04d %s", speedA[plan][countIdx], timerA[plan][countIdx], slctMode[modeTIM[plan][countIdx]]);
@@ -450,11 +467,25 @@ void setIDX() {
         }
 
         if (selectSet == 2) {
+          if(touchUp(Button_PLUS)){
+            modeSens[plan][countIdx]++ ;
+            if (modeSens[plan][countIdx] > 2 ) modeSens[plan][countIdx] = 0 ;
+          }
+          if(touchUp(Button_MIN)){
+            modeSens[plan][countIdx]-- ;
+            if (modeSens[plan][countIdx] == 255 ) modeSens[plan][countIdx] = 2 ;
+          }
+          lcd_char(1, 25, 40, "Follow Line Mode", true, false, false);
+          sprintf(buff, "%s", slctFLMODE[modeSens[plan][countIdx]]);
+          lcd_char(1, 25, 49, buff, true, false, false);
           
           lcd.fillRect(3, 40, 18, 18, SH110X_WHITE);
           lcd_char(2, 7, 42, "H", false, false, false);
         }
         else {
+          lcd_char(1, 25, 40, "Follow Line Mode", true, false, false);
+          sprintf(buff, "%s", slctFLMODE[modeSens[plan][countIdx]]);
+          lcd_char(1, 25, 49, buff, true, false, false);
           
           lcd.drawRect(3, 40, 18, 18, SH110X_WHITE);
           lcd_char(2, 7, 42, "H", true, false, false);

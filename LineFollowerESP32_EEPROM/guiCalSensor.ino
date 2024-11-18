@@ -1,7 +1,6 @@
 
 void guiCalSensor() {
   oledClear();
-  byte _stepsCalib;
   while (1) {
     headUp(true, false);
     if (touchUp(Button_RUN)) {
@@ -12,10 +11,37 @@ void guiCalSensor() {
 
     if (touchUp(Button_UP)) {
       delay(10);
+      calibAuto();
+      lcd.fillRoundRect(25, 25, 25, 10, 2, SH110X_WHITE);
+      lcd_char(1, 26, 26, "Auto", false, false, false);
+    } else {
+      lcd.drawRoundRect(25, 25, 25, 10, 2, SH110X_WHITE);
+      lcd_char(1, 26, 26, "Auto", true, false, false);
+    }
+
+    if (touchUp(Button_PLUS)) {
+      countMenu = 1;
+      calibManual();
+      lcd.fillRoundRect(55, 25, 38, 10, 2, SH110X_WHITE);
+      lcd_char(1, 57, 26, "Manual", false, false, false);
+    } else {
+      lcd.drawRoundRect(55, 25, 38, 10, 2, SH110X_WHITE);
+      lcd_char(1, 57, 26, "Manual", true, false, false);
+    }
+    lcd.display();
+  } // end while calib bracket
+}
+
+
+void calibAuto(){
+byte _stepsCalib;
+lcd.clearDisplay();
+delay(10);
       while (1) {
         headUp(true, false);
         if (touchUp(Button_RUN)) {
           _stepsCalib = 0;
+          lcd.clearDisplay();
           break;
         }
 
@@ -24,13 +50,15 @@ void guiCalSensor() {
         }
 
         if (_stepsCalib == 0) {
-          if (touchDown(Button_PLUS , 50)) {
+          if (touchDown(Button_PLUS,100)) {
             sensorSensivity++;
             if (sensorSensivity > 100) sensorSensivity = 0;
+            saveSensorSens();
           }
-          if (touchDown(Button_MIN , 50)) {
+          if (touchDown(Button_MIN,100)) {
             sensorSensivity--;
             if (sensorSensivity == 255) sensorSensivity = 100;
+            saveSensorSens();
           }
           sprintf(buff, "Set Sensivity : %d", sensorSensivity);
           lcd_char(1, 2, 16, buff, true, false, false);
@@ -38,30 +66,21 @@ void guiCalSensor() {
 
         else if (_stepsCalib == 1) {
           for (byte i = 0; i < MAXSENSOR; i++) {
-            setMinVal[i] = minVal[i] = 10;
-            setMaxVal[i] = maxVal[i] = 100;
+            setMinVal[i] = setMinVal[i] = 1023;
+            setMaxVal[i] = setMaxVal[i] = 0;
           }
           delayMicroseconds(500);
           while (1) {
             headUp(true, false);
-            lcd_char(1, 2, 16, "Taruh Robot", true, false, false);
-            lcd_char(1, 2, 26, "diatas Garis", true, false, false);
-            lcd_char(1, 2, 36, "Press OK for Save", true, false, false);
+            dispSensor(0xFFFF);
+            lcd_char(1, 35 , 40, "Scanning!!", true, false, false);
             int buffSens = readSensor();
-            // for (int x = 0; x < MAXSENSOR; x++) {
-            //   if (adcVal[x] > maxVal[x]) {
-            //     maxVal[x] = adcVal[x];
-            //   }
-            //   if (adcVal[x] < minVal[x]) {
-            //     minVal[x] = adcVal[x];
-            //   }
-            // }
             for (int x = 0; x < MAXSENSOR; x++) {
-              if (filteredVal[x] > maxVal[x]) {
-                maxVal[x] = filteredVal[x];
+              if (adcVal[x] > setMaxVal[x]) {
+                setMaxVal[x] = adcVal[x];
               }
-              if (filteredVal[x] < minVal[x]) {
-                minVal[x] = filteredVal[x];
+              if (adcVal[x] < setMinVal[x]) {
+                setMinVal[x] = adcVal[x];
               }
             }
             lcd.display();
@@ -73,31 +92,24 @@ void guiCalSensor() {
           }
         } // steps 1
         else if (_stepsCalib == 2) {
-          // for (int i = 0; i < MAXSENSOR; i++) {
-          //   CalAdc[i] = ((maxVal[i] - minVal[i]) * (float)((100.0 - sensorSensivity) / 100.0)) + minVal[i];
-          // }
           for (int i = 0; i < MAXSENSOR; i++) {
-            CalAdc[i] = (maxVal[i] - minVal[i]) / sensorSensivity;
+            CalAdc[i] = ((setMaxVal[i] - setMinVal[i]) * (float)((100.0 - sensorSensivity) / 100.0)) + setMinVal[i];
           }
           lcd_char(1, 2, 16, "Success Calibration", true, false, false);
           sprintf(buff, "Sensor %d : %u" , sens, CalAdc[sens]);
           lcd_char(1, 2, 32, buff, true, false, false);
+          saveCalib();
+          saveMaxMinSens();
           delay(300);
           sens++;
           if(sens > 13) sens = 0;
         }
         lcd.display();
-      } // end while bracket
-      lcd.fillRoundRect(25, 25, 25, 10, 2, SH110X_WHITE);
-      lcd_char(1, 26, 26, "Auto", false, false, false);
-    } else {
-      lcd.drawRoundRect(25, 25, 25, 10, 2, SH110X_WHITE);
-      lcd_char(1, 26, 26, "Auto", true, false, false);
-    }
+      } 
+  }
 
-    if (touchUp(Button_PLUS)) {
-      countMenu = 1;
-      selectSet = 0;
+void calibManual(){
+  selectSet = 0;
       while(1){
         headUp(true, false);
         dispSensor(readSensor());
@@ -162,12 +174,4 @@ void guiCalSensor() {
         lcd.write(0x1E);
         lcd.display();
       }
-      lcd.fillRoundRect(55, 25, 38, 10, 2, SH110X_WHITE);
-      lcd_char(1, 57, 26, "Manual", false, false, false);
-    } else {
-      lcd.drawRoundRect(55, 25, 38, 10, 2, SH110X_WHITE);
-      lcd_char(1, 57, 26, "Manual", true, false, false);
-    }
-    lcd.display();
-  } // end while calib bracket
 }

@@ -1,81 +1,124 @@
 
 void CMIDX() {
-  const char* mode []= { "copy" , "mirror"};
+  const char* mode []= { " Copy " , "Mirror"};
   char modCopy[2][7] = {"COPY", "MIRROR"};
   byte x1, x2;
-  byte selectModeCM = 0;
-  byte steps = 0;
+  bool selectModeCM = 0;
+  byte steps = 1;
   bool doneCM = false;
   selectSet = 0;
   while (1) {
-    headCMIDX:
-    headUp(true, false);
-    if (touchUp(Button_RUN)) {
-      oledClear();
+    
+      lcd.drawBitmap(0, 0, logoCopyMirrorPlan, 128, 64, SH110X_WHITE);
+      lcd_char(1 , 15 , 5 , "Copy Mirror Plan" , true , false , true);
+      lcd.fillRoundRect(118 , 0 , 1 , 55 , 0 , SH110X_WHITE );
+      lcd.fillRoundRect(117, 27 , 3 , 6 , 2 , SH110X_WHITE );
+
+     if(touchUp(Button_RUN)){
+      byte selectModeCM = 0;
+      lcd.clearDisplay();
       break;
-    }
-    if (touchUp(Button_UP)) {
-      selectSet--;
-      if (selectSet == 255) selectSet = 3;
-    }
-    if (touchUp(Button_DOWN)) {
-      selectSet++;
-      if (selectSet > 3) selectSet = 0;
+     }
+
+    if(touchUp(Button_UP)){
+      lcd.clearDisplay();
+      steps++;
+      if(steps > 3 ) steps = 1;
     }
 
-    if (selectSet == 0) {
-      lcd_char(1, 0, 15, ">", true, false, false);
-      if (touchUp(Button_PLUS)) {
-        selectModeCM++;
-        if (selectModeCM > 1) selectModeCM = 1;
-      }
-      if (touchUp(Button_MIN)) {
-        selectModeCM--;
-        if (selectModeCM == 255) selectModeCM = 0;
-      }
+    if(touchUp(Button_DOWN)){
+      lcd.clearDisplay();
+      steps--;
+      if(steps < 1 ) steps = 3;
     }
-    else if (selectSet == 1) {
-      lcd_char(1, 0, 25, ">", true, false, false);
-      if (touchUp(Button_PLUS)) {
-        x1++;
-        if (x1 > 4) x1 = 4;
-      }
-      if (touchUp(Button_MIN)) {
-        x1--;
-        if (x1 == 255) x1 = 0;
-      }
+
+
+    if(touchUp(Button_OK)){
+      lcd.clearDisplay();
+      steps = 5;
     }
-    else if (selectSet == 2) {
-      lcd_char(1, 0, 35, ">", true, false, false);
-      if (touchUp(Button_PLUS)) {
-        x2++;
-        if (x2 > 4) x2 = 4;
-      }
-      if (touchUp(Button_MIN)) {
-        x2--;
-        if (x2 <= 255) x2 = 0;
-      }
+
+    
+     //mode
+    if(steps == 1){
+     if(touchUp(Button_PLUS)){
+       lcd.clearDisplay();
+       selectModeCM = !selectModeCM;
+     }
+     if(touchUp(Button_MIN)){
+       lcd.clearDisplay();
+       selectModeCM = !selectModeCM;
+     }
+     lcd.fillRoundRect(65, 24, 40 , 12, 2, SH110X_WHITE);
+     lcd_char(1, 67, 26, mode[selectModeCM] , false, false, false);
+    }else{
+     lcd.drawRoundRect(65, 24, 40 , 12, 2, SH110X_WHITE);
+     lcd_char(1, 67, 26, mode[selectModeCM] , true, false, false);
     }
-    else if (selectSet == 3) {
-      lcd_char(1, 0, 45, ">", true, false, false);
-      if (touchUp(Button_OK)) {
+     
+     //x1
+    if(steps == 2){
+      if(touchUp(Button_PLUS)){
+         lcd.clearDisplay();
+         x1++ ;
+         if(x1 >= VAL_PLAN ) x1 = 0 ;
+       }
+      if(touchUp(Button_MIN)){
+         lcd.clearDisplay();
+         x1-- ;
+         if(x1 == 255 ) x1 = VAL_PLAN-1 ;
+       }
+
+     lcd.fillRoundRect(62, 40,  16 , 12, 2, SH110X_WHITE);     
+     sprintf(buff , "P%d" , x1+1);
+     lcd_char(1, 65, 42, buff , false, false, false);
+    }else{
+     lcd.drawRoundRect(62, 40,  16 , 12, 2, SH110X_WHITE);     
+     sprintf(buff , "P%d" , x1+1);
+     lcd_char(1, 65, 42, buff , true, false, false);
+    }
+
+
+    //x2
+    if(steps == 3){
+    
+      if(touchUp(Button_PLUS)){
+         lcd.clearDisplay();
+         x2++ ;
+         if(x2 >= VAL_PLAN ) x2 = 0 ;
+       }
+      if(touchUp(Button_MIN)){
+         lcd.clearDisplay();
+         x2-- ;
+         if(x2 == 255 ) x2 = VAL_PLAN-1 ;
+       }
+ 
+     lcd.fillRoundRect(90, 40,  16 , 12, 2, SH110X_WHITE);
+     sprintf(buff , "P%d" , x2+1);
+     lcd_char(1, 93, 42, buff , false, false, false);
+    }else{
+     lcd.drawRoundRect(90, 40,  16 , 12, 2, SH110X_WHITE);
+     sprintf(buff , "P%d" , x2+1);
+     lcd_char(1, 93, 42, buff , true, false, false);
+    }
+
+     lcd_char(1, 82, 42, ">" , true, false, false);
+
+     
+     // selectModeCM
+     // x1 
+     // x2 
+ 
+    if (steps == 5) {
         if (x1 == x2) {
           lcd_char(1, 10, 20, "Invalid Same Plan!", true, true, true);
           delay(2000);
           oledClear();
-          goto headCMIDX;
+          steps=1;
         } else {
           oledClear();
           steps = 1;
-        }
-      }
-    }
-    sprintf(buff, "Mode : %s" , modCopy[selectModeCM]);
-    lcd_char(1, 10, 15, buff, true, false, false);
-    lcd_char(1, 10, 25, "Plan: " + String(x1 + 1), true, false, false);
-    lcd_char(1, 10, 35, "ke Plan: " + String(x2 + 1), true, false, false);
-    lcd_char(1, 10, 45, "OK->", true, false, false);
-    if (steps == 1) {
+
       if (selectModeCM == 0) { // Mode Normal
         oledClear();
         for (byte i = 0; i < 100; i++) {
@@ -93,6 +136,8 @@ void CMIDX() {
           clrLine[x2][i] = clrLine[x1][i];
           pidProfile[x2][i] = pidProfile[x1][i];
           modeTIM[x2][i] = modeTIM[x1][i];
+          modeSens[x2][i] = modeSens[x1][i];
+
           lcd_loading(5,  29 , i, true, false, false);
           lcd.display();
           delay(25);
@@ -141,15 +186,22 @@ void CMIDX() {
           clrLine[x2][i] = clrLine[x1][i];
           pidProfile[x2][i] = pidProfile[x1][i];
           modeTIM[x2][i] = modeTIM[x1][i];
+          if(modeSens[x1][i] == 2 ) modeSens[x2][i] = 1;
+          else if(modeSens[x1][i] == 1 ) modeSens[x2][i] = 2;
+          else modeSens[x2][i] = modeSens[x1][i] ;
+
+          
+
           lcd_loading(1, 29, i, true, false, false);
           lcd.display();
           delay(10);
           if (i == 99) {
-            saveIdxAll();
+            saveAll();
             doneCM = true;
-          }
-        }
-      } // end select mode 1 CM
+           }
+         }
+        } // end select mode 1 CM
+      }
     }
     if(doneCM){
       oledClear();

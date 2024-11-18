@@ -1,4 +1,3 @@
-#include <SimpleKalmanFilter.h>
 
 #define MUX_Kiri_ADC1 32 
 #define MUX_Kanan_ADC2 35
@@ -8,11 +7,6 @@
 
 #define MAXSENSOR 14
 
-
-hw_timer_t *TimerEncoder_Cfg = NULL;
-hw_timer_t *TimerPlay_Cfg = NULL;
-hw_timer_t *TimerPID_Cfg = NULL;
-
 uint16_t adcVal[14];
 uint16_t CalAdc[14];
 uint8_t sensorSensivity;
@@ -21,15 +15,19 @@ int16_t minVal[14];
 int16_t setMaxVal[14];
 int16_t setMinVal[14];
 
-SimpleKalmanFilter kalmanFilters[14] = {
-    {1, 2, 0.2}, {1, 2, 0.2}, {1, 2, 0.2}, {1, 2, 0.2},
-    {1, 2, 0.2}, {1, 2, 0.2}, {1, 2, 0.2}, {1, 2, 0.2},
-    {1, 2, 0.2}, {1, 2, 0.2}, {1, 2, 0.2}, {1, 2, 0.2},
-    {1, 2, 0.2}, {1, 2, 0.2}
+
+int muxChannel[8][3] = {
+  {0, 0, 0},
+  {1, 0, 0},
+  {0, 1, 0},
+  {1, 1, 0},
+  {0, 0, 1},
+  {1, 0, 1},
+  {0, 1, 1},
+  {1, 1, 1}
 };
 
-float filteredVal[14]; // Menyimpan nilai yang telah difilter
+bool readSens = false ;
 
-
-
+float minBat = 11.8;
   

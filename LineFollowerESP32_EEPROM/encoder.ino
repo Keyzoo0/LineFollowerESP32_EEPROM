@@ -5,13 +5,13 @@
 
 
 
-void IRAM_ATTR TimerEncoder(){ // timer for calculate RPM
-  portENTER_CRITICAL_ISR(&timerMux);
-  // rpmL = pulseL * 6000 / 104;
-  // rpmR = pulseR * 6000 / 104 * (-1);
-  // pulseL = pulseR = 0;
-  portEXIT_CRITICAL_ISR(&timerMux);
-}
+// void IRAM_ATTR TimerEncoder(){ // timer for calculate RPM
+//   portENTER_CRITICAL_ISR(&timerMux);
+//   rpmL = pulseL * 6000 / 104;
+//   rpmR = pulseR * 6000 / 104 * (-1);
+//   pulseL = pulseR = 0;
+//   portEXIT_CRITICAL_ISR(&timerMux);
+// }
 
 void readENC_A() {
   if (digitalRead(ENC1B) > 0) {

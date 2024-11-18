@@ -1,67 +1,74 @@
 
 void menuCheckpoint(){
   while(1){
-          headUp(true, false);
+          lcd.clearDisplay();
           if(touchUp(Button_RUN)){
             oledClear();
-            saveCP();
+            saveAll();
             break;
           }
-          if(touchUp(Button_UP)){
-            selectSet++;
-            if(selectSet > 3) selectSet = 3;
-          }
           if(touchUp(Button_DOWN)){
-            selectSet--;
-            if(selectSet == 255) selectSet = 0; 
+            selectSet++;
+            if(selectSet > 4) selectSet = 0;
           }
-
+          if(touchUp(Button_UP)){
+            selectSet--;
+            if(selectSet == 255) selectSet = 4; 
+          }
           if(selectSet == 0){
-            lcd_char(1, 0, 15, ">", true, false, false);
+            lcd_char(1, 0, 5, ">", true, false, false);
             if(touchUp(Button_PLUS)){
-              readCCheckpoint[plan][countCP]++;
-              if(readCCheckpoint[plan][countCP] > 3) readCCheckpoint[plan][countCP] = 0;
+              countCP++;
+              if( countCP >= VAL_CHECKP ) countCP = 0;
             }
             if(touchUp(Button_MIN)){
-              readCCheckpoint[plan][countCP]--;
-              if(readCCheckpoint[plan][countCP] == 255) readCCheckpoint[plan][countCP] = 3;
+              countCP--;
+              if( countCP == 255 ) countCP = VAL_CHECKP-1;
             }
           } else if(selectSet == 1){
-            lcd_char(1, 0, 25, ">", true, false, false);
-            if(touchUp(Button_PLUS)){
-              iDelayCheckpoint[plan][countCP]++;
+            lcd_char(1, 0, 15, ">", true, false, false);
+            if(touchDown(Button_PLUS,75)){
+              CP[plan].saveAct[countCP]++;
+              if(CP[plan].saveAct[countCP] > 3) CP[plan].saveAct[countCP]= 0;
             }
-            if(touchUp(Button_MIN)){
-              iDelayCheckpoint[plan][countCP]--;
+            if(touchDown(Button_MIN,75)){
+              CP[plan].saveAct[countCP]--;
+              if(CP[plan].saveAct[countCP] == 255) CP[plan].saveAct[countCP] = 3;
             }
           } else if(selectSet == 2){
-            lcd_char(1, 0, 35, ">", true, false, false);
-            if(touchUp(Button_PLUS)){
-              timerACheckpoint[plan][countCP]++;
+            lcd_char(1, 0, 25, ">", true, false, false);
+            if(touchDown(Button_PLUS,75)){
+              CP[plan].saveiDelay[countCP]++;
             }
-            if(touchUp(Button_MIN)){
-              timerACheckpoint[plan][countCP]--;
+            if(touchDown(Button_MIN,75)){
+              CP[plan].saveiDelay[countCP]--;
             }
           } else if(selectSet == 3){
-            lcd_char(1, 0, 45, ">", true, false, false);
-            if(touchUp(Button_PLUS)){
-              readIdxCheckpoint[plan][countCP]++;
-              if(readIdxCheckpoint[plan][countCP] > 100) readIdxCheckpoint[plan][countCP] = 100;
+            lcd_char(1, 0, 35, ">", true, false, false);
+            if(touchDown(Button_PLUS,75)){
+              CP[plan].savetimerA[countCP]++;
             }
-            if(touchUp(Button_MIN)){
-              readIdxCheckpoint[plan][countCP]--;
-              if(readIdxCheckpoint[plan][countCP] == 255) readIdxCheckpoint[plan][countCP] = 0;
+            if(touchDown(Button_MIN,75)){
+              CP[plan].savetimerA[countCP]--;
+            }
+          } else if(selectSet == 4){
+            lcd_char(1, 0, 45, ">", true, false, false);
+            if(touchDown(Button_PLUS,75)){
+              CP[plan].saveReadIdx[countCP]++;
+              if(CP[plan].saveReadIdx[countCP] > 99) CP[plan].saveReadIdx[countCP]= 0;
+            }
+            if(touchDown(Button_MIN,75)){
+              CP[plan].saveReadIdx[countCP]--;
+              if(CP[plan].saveReadIdx[countCP] == 255) CP[plan].saveReadIdx[countCP] = 99;
             }
           }
           
-          lcd.drawRoundRect(32, 0, 23, 10, 3, SH110X_WHITE);
-          sprintf(buff, "P:%d", plan + 1);
-          lcd_char(1, 36, 2, buff, true, false, false);
-          
-          lcd_char(1, 10, 15, "ACTION: " + String(actCheckpoint[readCCheckpoint[plan][countCP]]), true, false, false);
-          lcd_char(1, 10, 25, "D ACT : " + String(iDelayCheckpoint[plan][countCP]) + " mS", true, false, false);
-          lcd_char(1, 10, 35, "SET SA: " + String(timerACheckpoint[plan][countCP]) + " mS" , true, false, false);
-          lcd_char(1, 10, 45, "READIX: " + String(readIdxCheckpoint[plan][countCP]), true, false, false);
+          sprintf(buff , "PLAN-%d : CP-%d" , plan+1 , countCP);
+          lcd_char(1, 10, 5,  buff, true, false, false);
+          lcd_char(1, 10, 15, "ACTION: " + String(actCheckpoint[CP[plan].saveAct[countCP]]), true, false, false);
+          lcd_char(1, 10, 25, "D ACT : " + String(CP[plan].saveiDelay[countCP]) + " mS", true, false, false);
+          lcd_char(1, 10, 35, "SET TA: " + String(CP[plan].savetimerA[countCP]) + " mS" , true, false, false);
+          lcd_char(1, 10, 45, "READIX: " + String(CP[plan].saveReadIdx[countCP]), true, false, false);
           lcd.display();
         }
 }

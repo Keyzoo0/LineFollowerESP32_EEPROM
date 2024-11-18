@@ -15,6 +15,15 @@ Adafruit_PCF8574 pcf;
 #define Button_MIN 1
 
 
+#define btnOk     Button_OK
+#define btnUp     Button_UP
+#define btnDown   Button_DOWN
+#define btnBack   Button_RUN
+#define btnPlus   Button_PLUS
+#define btnMinus  Button_MIN
+
+
+
 #define LONG_TIME_PRESS 1000
 bool currentStatePress;
 bool lastStatePress = false;

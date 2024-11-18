@@ -15,6 +15,7 @@ while (1) {
     pwmMotor(0, 0);
     stopMotor();
     initEncoder(false);
+    lcd.clearDisplay();
     break;
   }
   if (touchUp(Button_OK)) {
@@ -38,7 +39,7 @@ while (1) {
       }
       if (touchUp(Button_MIN)) {
         selectDirectR--;
-        if (selectDirectR == 255) selectDirectR == 2;
+        if (selectDirectR == 255 ) selectDirectR = 2;
       }
     }
     else if (steps == 2) {
@@ -83,7 +84,7 @@ while (1) {
       }
       if (touchUp(Button_MIN)) {
         selectDirectL--;
-        if (selectDirectL == 255) selectDirectL == 2;
+        if (selectDirectL == 255) selectDirectL = 2;
       }
     }
     else if (steps == 2) {
