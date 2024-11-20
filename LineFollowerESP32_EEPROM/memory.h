@@ -10,7 +10,7 @@ SPIFlash memory(5);
 #define LED 12
 #define SLED(x) digitalWrite(LED, x)
 
-#define VAL_INDEX 100
+#define VAL_INDEX 50
 #define VAL_PLAN 9
 #define VAL_CHECKP 8
 
@@ -110,6 +110,7 @@ typedef struct {
     uint8_t saveprofilePID[VAL_INDEX];
     uint8_t saveModeTIM[VAL_INDEX];
     uint8_t saveModeSens[VAL_INDEX];
+    uint8_t saveUsedSens[VAL_INDEX];
 } Plans;
 
 // Array of Plans structs
@@ -167,6 +168,7 @@ byte clrLine[VAL_PLAN][VAL_INDEX];
 byte pidProfile[VAL_PLAN][VAL_INDEX];
 byte modeTIM[VAL_PLAN][VAL_INDEX];
 byte modeSens[VAL_PLAN][VAL_INDEX];
+byte usedSens[VAL_PLAN][VAL_INDEX];
 
 
 const unsigned int sensLog[23] {
@@ -183,6 +185,7 @@ char clrLineI[2][6] = {"Black", "White"};
 char slctPID[7][9] = {"Normal", "Profil 1", "Profil 2", "Profil 3", "Profil 4", "Profil 5", "Profil 6"};
 char slctMode[3][5] = {"mS", "CmR", "CmL"};
 char slctFLMODE[3][4] = {"FLC", "FLR", "FLL"};
+char slctUsedSens[6][20] = {"All Sensor" , "Ignore 1 Side" , "Ignore 2 Side" , "Ignore 3 Side" };
 
 
 //===========throttle====================
@@ -216,6 +219,7 @@ void saveAllPlans() {
             Plan[planIndex].saveprofilePID[i] = pidProfile[planIndex][i];
             Plan[planIndex].saveModeTIM[i] = modeTIM[planIndex][i];
             Plan[planIndex].saveModeSens[i] = modeSens[planIndex][i]; 
+            Plan[planIndex].saveUsedSens[i] = usedSens[planIndex][i]; 
             SLED(1);
         }
 
@@ -245,6 +249,7 @@ void readIdx() {
             pidProfile[planIndex][i] = Plan[planIndex].saveprofilePID[i];
             modeTIM[planIndex][i] = Plan[planIndex].saveModeTIM[i];
             modeSens[planIndex][i]= Plan[planIndex].saveModeSens[i] ; 
+            usedSens[planIndex][i]= Plan[planIndex].saveUsedSens[i] ; 
 
         }
     }

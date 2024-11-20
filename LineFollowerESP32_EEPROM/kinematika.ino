@@ -57,7 +57,7 @@ void chkPnt() {
 }
 
 void read_counter() {
-  counting = idx[plan][start];
+  counting = Plan[plan].saveIdx[start];
   if (counting == 0) {
     stop();
   }
@@ -85,50 +85,51 @@ void read_counter() {
   else if (counting == 8) {
     turnRight();
   }
-  else if (counting == 9) {
-    fan();
-  }
 }
-void fan(){
-  stopMotor();
-  delay(idelay[plan][start] * 15);
 
-}
 
 void stop() {
   stopMotor();
-  delay(idelay[plan][start]* 15);
+  delay(((Plan[plan].saveidelayH[start]<<8) | Plan[plan].saveidelayL[start]) * 15);
 }
 
 void forward(void) {
-
+  int sped;
+  int spedN = 50;
   timeTrig = millis();
+  if (start == 0) sped = normalSpeed;
   while (1) {
-    
-    pwmMotor(spdL[plan][start], spdR[plan][start]);
+    if (spedN < sped) {
+      spedN += 2;
+      if (spedN < 50) sped = 50;
+      else sped = spedN;
+      if (spedN >= sped) sped = sped;
+    }
+    pwmMotor(sped, sped);
 
-    if ((millis()  - timeTrig) >= idelay[plan][start])  break;
+    if ((millis()  - timeTrig) > idelay[plan][start]*10)  break;
   
   }
   timeTrig = 0;
 }
 void backward(void) {
-  timeTrig = millis();
-  while (1) {
-    
-    pwmMotor(spdL[plan][start] * -1 , spdR[plan][start] * -1);
-    if ((millis()  - timeTrig) >= idelay[plan][start])  break;
-  
-  }
-  timeTrig = 0;
+  // LED(true);
+  // stopMotor();
+  // delay(200);
+  // pwmMotor(Plan[plan].spdR[start] * -1, Plan[plan].spdR[start] * -1);
+  // delay(Plan[plan].edelay[start] * 15);
+  // stopMotor();
+  // delay(200);
 }
 void right(void) {
-  pwmMotor(spdL[plan][start], spdR[plan][start] * -1);
-  delay(idelay[plan][start] * 2);
+  // LED(true);
+  // pwmMotor(Plan[plan].spdR[start], Plan[plan].spdL[start] * -1);
+  // delay(Plan[plan].edelay[start] * 2);
 }
 void left(void) {
-  pwmMotor(spdL[plan][start] * -1, spdR[plan][start]);
-  delay(idelay[plan][start] * 2);
+  // LED(true);
+  // pwmMotor(Plan[plan].spdL[start] * -1, Plan[plan].spdR[start]);
+  // delay(Plan[plan].edelay[start] * 2);
 }
 void pick() {
   // stopMotor();

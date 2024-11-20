@@ -119,6 +119,10 @@ void setIDX() {
           if (touchDown(Button_MIN, 150)) {
             countIdx--;
           }
+          if(touchUp(Button_OK)){
+            oledClear();
+            addRemoveIdx(plan , countIdx);
+          }
         }
 
         switch (IdIdx) {
@@ -142,20 +146,10 @@ void setIDX() {
 
         if (selectSet == 1) {
           if (touchUp(Button_OK)) {
-            if (++menuCount > 3) menuCount = 1;
+            if (++menuCount > 2) menuCount = 1;
           }
+          
           if (menuCount == 1) {
-            lcd.drawRect(23, 13, 48, 11, SH110X_WHITE);
-            if (touchDown(Button_PLUS , 150)) {
-              trigW[plan][countIdx]++;
-              if (trigW[plan][countIdx] > 1) trigW[plan][countIdx] = 0;
-            }
-            if (touchDown(Button_MIN, 150)) {
-              trigW[plan][countIdx]--;
-              if (trigW[plan][countIdx] == 255) trigW[plan][countIdx] = 1;
-            }
-          }
-          if (menuCount == 2) {
             lcd.drawRect(70, 13, 54, 11, SH110X_WHITE);
             if (touchDown(Button_PLUS , 150)) {
               logic[plan][countIdx]++;
@@ -166,7 +160,7 @@ void setIDX() {
               if (logic[plan][countIdx] == 255) logic[plan][countIdx] = 3;
             }
           }
-          if (menuCount == 3) {
+          if (menuCount == 2) {
             lcd.drawRect(22, 22, 95, 16, SH110X_WHITE);
             if (touchDown(Button_PLUS , 150)) {
               sensLogIdx[plan][countIdx]++;
@@ -178,13 +172,13 @@ void setIDX() {
             }
           }
           dispSensorIdx(sensLog[sensLogIdx[plan][countIdx]]);
-          sprintf(buff, "Trig:%s Logic:%s", slctTrig[trigW[plan][countIdx]], logika[logic[plan][countIdx]]);
+          sprintf(buff, "SLog:%2d Logic:%s", sensLogIdx[plan][countIdx] , logika[logic[plan][countIdx]]);
           lcd_char(1, 25, 15, buff, true, false, false);
           lcd.fillRect(3, 19, 18, 18, SH110X_WHITE);
           lcd_char(2, 7, 21, "T", false, false, false);
         } else {
           dispSensorIdx(sensLog[sensLogIdx[plan][countIdx]]);
-          sprintf(buff, "Trig:%s Logic:%s", slctTrig[trigW[plan][countIdx]], logika[logic[plan][countIdx]]);
+          sprintf(buff, "SLog:%2d Logic:%s", sensLogIdx[plan][countIdx] , logika[logic[plan][countIdx]]);
           lcd_char(1, 25, 15, buff, true, false, false);
           lcd.drawRect(3, 19, 18, 18, SH110X_WHITE);
           lcd_char(2, 7, 21, "T", true, false, false);
@@ -229,6 +223,8 @@ void setIDX() {
           else if (idx[plan][countIdx] == 2) sprintf(buff, "L:-%03d R:%03d", spdL[plan][countIdx], spdR[plan][countIdx]);
           else if (idx[plan][countIdx] == 3) sprintf(buff, "L:%03d R:-%03d", spdL[plan][countIdx], spdR[plan][countIdx]);
           else if (idx[plan][countIdx] == 4) sprintf(buff, "L:-%03d R:-%03d", spdL[plan][countIdx], spdR[plan][countIdx]);
+          else if (idx[plan][countIdx] == 7) sprintf(buff, "L:-%03d R:%03d", spdL[plan][countIdx], spdR[plan][countIdx]);
+          else if (idx[plan][countIdx] == 8) sprintf(buff, "L:%03d R:-%03d", spdL[plan][countIdx], spdR[plan][countIdx]);
           else sprintf(buff, "L:--- R:---");
           lcd_char(1, 25, 49, buff, true, false, false);
           lcd.fillRect(3, 40, 18, 18, SH110X_WHITE);
@@ -291,21 +287,23 @@ void setIDX() {
         }
 
         if (selectSet == 2) {
+         
           if (touchDown(Button_PLUS , 150)) {
-            clrLine[plan][countIdx] = 1;
+            if(++pidProfile[plan][countIdx] > 6) pidProfile[plan][countIdx] = 0;
           }
           if (touchDown(Button_MIN, 150)) {
-            clrLine[plan][countIdx] = 0;
+            if(--pidProfile[plan][countIdx] == 255) pidProfile[plan][countIdx] = 6;
           }
-          lcd_char(1, 25, 40, "Run on line", true, false, false);
-          sprintf(buff, "%s", clrLineI[clrLine[plan][countIdx]]);
+
+          lcd_char(1, 25, 40, "PID Profile ", true, false, false);
+          sprintf(buff, "%s", slctPID[pidProfile[plan][countIdx]]);
           lcd_char(1, 25, 49, buff, true, false, false);
           lcd.fillRect(3, 40, 18, 18, SH110X_WHITE);
           lcd_char(2, 7, 42, "C", false, false, false);
         }
         else {
-          lcd_char(1, 25, 40, "Run on line", true, false, false);
-          sprintf(buff, "%s", clrLineI[clrLine[plan][countIdx]]);
+          lcd_char(1, 25, 40, "PID Profile ", true, false, false);
+          sprintf(buff, "%s", slctPID[pidProfile[plan][countIdx]]);
           lcd_char(1, 25, 49, buff, true, false, false);
           lcd.drawRect(3, 40, 18, 18, SH110X_WHITE);
           lcd_char(2, 7, 42, "C", true, false, false);
@@ -443,24 +441,24 @@ void setIDX() {
         }
 
         if (selectSet == 1) {
-          if (touchUp(Button_OK)) {
-            if (++menuCount > 3) menuCount = 1;
+      
+          if(touchUp(Button_PLUS)){
+            usedSens[plan][countIdx]++ ;
+            if (usedSens[plan][countIdx] > 3 ) usedSens[plan][countIdx] = 0 ;
           }
-          if (touchDown(Button_PLUS , 150)) {
-            if(++pidProfile[plan][countIdx] > 6) pidProfile[plan][countIdx] = 0;
-          }
-          if (touchDown(Button_MIN, 150)) {
-            if(--pidProfile[plan][countIdx] == 255) pidProfile[plan][countIdx] = 6;
-          }
-          lcd_char(1, 25, 15, "PID Profile :", true, false, false);
-          sprintf(buff, "%s", slctPID[pidProfile[plan][countIdx]]);
+          if(touchUp(Button_MIN)){
+            usedSens[plan][countIdx]-- ;
+            if (usedSens[plan][countIdx] == 255 ) usedSens[plan][countIdx] = 3 ;
+          }         
+           lcd_char(1, 25, 15, "Used Sensor", true, false, false);
+          sprintf(buff, "%s", slctUsedSens[usedSens[plan][countIdx]]);
           lcd_char(1, 25, 25, buff, true, false, false);
           lcd.fillRect(3, 19, 18, 18, SH110X_WHITE);
           lcd_char(2, 7, 21, "F", false, false, false);
         }
         else {
-          lcd_char(1, 25, 15, "PID Profile :", true, false, false);
-          sprintf(buff, "%s", slctPID[pidProfile[plan][countIdx]]);
+          lcd_char(1, 25, 15, "Used Sensor", true, false, false);
+          sprintf(buff, "%s", slctUsedSens[usedSens[plan][countIdx]]);
           lcd_char(1, 25, 25, buff, true, false, false);
           lcd.drawRect(3, 19, 18, 18, SH110X_WHITE);
           lcd_char(2, 7, 21, "F", true, false, false);
