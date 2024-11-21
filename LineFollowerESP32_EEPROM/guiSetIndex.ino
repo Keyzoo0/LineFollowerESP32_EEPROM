@@ -223,8 +223,6 @@ void setIDX() {
           else if (idx[plan][countIdx] == 2) sprintf(buff, "L:-%03d R:%03d", spdL[plan][countIdx], spdR[plan][countIdx]);
           else if (idx[plan][countIdx] == 3) sprintf(buff, "L:%03d R:-%03d", spdL[plan][countIdx], spdR[plan][countIdx]);
           else if (idx[plan][countIdx] == 4) sprintf(buff, "L:-%03d R:-%03d", spdL[plan][countIdx], spdR[plan][countIdx]);
-          else if (idx[plan][countIdx] == 7) sprintf(buff, "L:-%03d R:%03d", spdL[plan][countIdx], spdR[plan][countIdx]);
-          else if (idx[plan][countIdx] == 8) sprintf(buff, "L:%03d R:-%03d", spdL[plan][countIdx], spdR[plan][countIdx]);
           else sprintf(buff, "L:--- R:---");
           lcd_char(1, 25, 49, buff, true, false, false);
           lcd.fillRect(3, 40, 18, 18, SH110X_WHITE);

@@ -135,7 +135,7 @@ home:
     int timerSpeedA = 0, timerSpeedB = 0;
     long TA = 0, TB = 0;
     if (protec) {
-      TA = CP[plan].saveiDelay[slct];
+      TA = iDelayCheckpoint[plan][slct];
       timerSpeedA = normalSpeed;
       long lastmsg = millis();
       int speedThrottle = timerSpeedA / 4;
@@ -146,7 +146,7 @@ home:
           if (speedThrottle >= normalSpeed) maxS = normalSpeed;
         }
         dataSensor = readSensor();
-        program(dataSensor , 0);
+        program(dataSensor , modeSens[plan][start] , maxS , pidProfile[plan][start] , usedSens[plan][start]);
 
         if (touchUp(btnOk)) {
           sw_millis.stop();
@@ -155,7 +155,7 @@ home:
           break;
         }
 
-        if ((millis()  - lastmsg) > TA) break;
+        if ((millis()  - lastmsg) >= TA) break;
       }
 
       timerSpeedA = 0;
@@ -167,7 +167,7 @@ home:
         sw_millis.stop();
         stopMotor();
         goto lastStop;
-      } else start = CP[plan].saveReadIdx[slct]+1;
+      } else start = readIdxCheckpoint[plan][slct]+1;
     }
 
     while (1) {
@@ -175,46 +175,41 @@ home:
       long lastmsgB;
       bool do_action = false;
 
-      initEncoder(true);
       dataSensor = readSensor();
-      setSensor = sensLog[Plan[plan].savesensLogIdx[VAL_INDEX]];
+      setSensor = sensLog[sensLogIdx[plan][start]];
 
-      if (Plan[plan].savelogic[start] == 0) { //OR
+      if (logic[plan][start] == 0) { //OR
        
-          if (~(dataSensor) & setSensor) {
+          if (dataSensor & setSensor) {
             do_action = true;
           }
           else {
-            maxS = normalSpeed;
-            program(dataSensor, 0);
+            program(dataSensor , modeSens[plan][start] , normalSpeed , pidProfile[plan][start] , usedSens[plan][start]);
             do_action = false;
           }
         
       }
-      else if (Plan[plan].savelogic[start] == 1) { //AND
-        // if (invers) scann = dataSensor & setSensor;
-        // else scann = ~(dataSensor) & setSensor;
-        scann = ~(dataSensor) & setSensor;
-        if (scann == setSensor) do_action = true;
+      else if (logic[plan][start] == 1) { //AND
+        if ((dataSensor & setSensor) == setSensor) do_action = true;
         else {
-          maxS = normalSpeed;
-          program(dataSensor, 0);
+            program(dataSensor , modeSens[plan][start] , normalSpeed , pidProfile[plan][start] , usedSens[plan][start]);
           do_action = false;
         }
-      } else if (Plan[plan].savelogic[start] == 2) { //TIM
+      } else if (logic[plan][start] == 2) { //TIM
         do_action = true;
-      } else if (Plan[plan].savelogic[start] == 3) { //XOR
+      } else if (logic[plan][start] == 3) { //XOR
         
       }
 
       if (do_action) {
-        initEncoder(false);
         read_counter();
         dataSensor = readSensor();
+
+        
         TA = timerA[plan][start] ;
         lastmsgA = millis();
      
-        timerSpeedA = Plan[plan].savespeedA[start];
+        timerSpeedA = speedA[plan][start];
         int speedThrottleA = timerSpeedA / 4;
         while (1) {
           if (speedThrottleA < speedA[plan][start]) {
@@ -224,23 +219,24 @@ home:
             if (speedThrottleA >= speedA[plan][start]) maxS = speedA[plan][start];
           }
           dataSensor = readSensor();
-          program(dataSensor, modeSens[plan][start]);
-
-          if (touchUp(btnOk)) {
-            sw_millis.stop();
-            stopMotor();
-            break;
-          }
+          program(dataSensor , modeSens[plan][start] , maxS , pidProfile[plan][start] , usedSens[plan][start]);
+        if (touchUp(btnOk)) {
+        sw_millis.stop();
+        stopMotor();
+        TA = 0;
+        TB = 0;
+        break;
+      }
           if (TA > 0) {
               if ((millis()  - lastmsgA) > TA * 15) break;
           } else break;
         }
 
         
-        TB = (Plan[plan].savetimerBH[start] << 8) | Plan[plan].savetimerBL[start] ;
+        TB = timerB[plan][start];
         lastmsgB = millis();
         
-        timerSpeedB = Plan[plan].savespeedB[start];
+        timerSpeedB = speedB[plan][start];
         int speedThrottleB = timerSpeedB / 4;
         int SpeedAB = Plan[plan].savespeedA[start];
         while (1) {
@@ -248,24 +244,26 @@ home:
             speedThrottleB += 2;
             if (speedThrottleB < 50) maxS = 50;
             else maxS = speedThrottleB;
-            if (speedThrottleB >= Plan[plan].savespeedB[start]) maxS = Plan[plan].savespeedB[start];
-          } else if (Plan[plan].savespeedB[start] > Plan[plan].savespeedA[start]) {
+            if (speedThrottleB >= speedB[plan][start]) maxS = speedB[plan][start];
+          } else if (speedB[plan][start] > speedA[plan][start]) {
             SpeedAB += 2;
             maxS = SpeedAB;
-            if (SpeedAB >= Plan[plan].savespeedB[start]) maxS = Plan[plan].savespeedB[start];
-          } else if (Plan[plan].savespeedB[start] < Plan[plan].savespeedA[start]) {
+            if (SpeedAB >= speedB[plan][start]) maxS = speedB[plan][start];
+          } else if (speedB[plan][start] < speedA[plan][start]) {
             SpeedAB -= 2;
             maxS = SpeedAB;
-            if (SpeedAB <= Plan[plan].savespeedB[start]) maxS = Plan[plan].savespeedB[start];
+            if (SpeedAB <= speedB[plan][start]) maxS = speedB[plan][start];
           }
           dataSensor = readSensor();
-          program(dataSensor, modeSens[plan][start]);
+          program(dataSensor , modeSens[plan][start] , maxS , pidProfile[plan][start] , usedSens[plan][start]);
 
-          if (touchUp(btnOk)) {
-            sw_millis.stop();
-            stopMotor();
-            break;
-          }
+        if (touchUp(btnOk)) {
+        sw_millis.stop();
+        stopMotor();
+        TA = 0;
+        TB = 0;
+        break;
+      }
           if (TB > 0) {
               if ((millis()  - lastmsgB) > TB * 15) break;
           } else break;

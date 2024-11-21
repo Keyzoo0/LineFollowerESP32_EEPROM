@@ -88,13 +88,7 @@ void guiTunePid() {
           int bufDataSensor = readSensor();
           headUp(true, false);
           dispSensor(bufDataSensor);
-          if(selectFLMODETest == 0){
-            program(bufDataSensor, 0);
-          } else if(selectFLMODETest == 1){
-            program(bufDataSensor, 1);
-          } else if(selectFLMODETest == 2) {
-            program(bufDataSensor, 2);
-          }
+            program(bufDataSensor, selectFLMODETest , normalSpeed , selectPresetPID , 0) ;
           if (touchUp(Button_RUN)) {
             oledClear();
             selectSet = 1;

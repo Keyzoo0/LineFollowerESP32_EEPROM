@@ -1,6 +1,3 @@
-/*
-flowchart
-*/
 
 //Linking all header 
 #include "oled.h"
@@ -13,7 +10,6 @@ flowchart
 #include "memory.h"
 #include "kinematika.h"
 #include "timer.h"
-
 
 void setup() {
 //setup robot

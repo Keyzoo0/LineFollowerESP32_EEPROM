@@ -39,19 +39,18 @@ while (1) {
         idx[selectPlan][i] = 0;
         logic[selectPlan][i] = 0;
         sensLogIdx[selectPlan][i] = 1;
-        trigW[selectPlan][i] = 1;
         spdR[selectPlan][i] = 80;
         spdL[selectPlan][i] = 80;
-        idelay[selectPlan][i] = 0;
+        idelay[selectPlan][i] = 50;
         timerA[selectPlan][i] = 0;
         timerB[selectPlan][i] = 0;
-        speedA[selectPlan][i] = 100;
-        speedB[selectPlan][i] = 100;
-        clrLine[selectPlan][i] = 0;
+        speedA[selectPlan][i] = 80;
+        speedB[selectPlan][i] = 80;
         pidProfile[selectPlan][i] = 3;
         modeTIM[selectPlan][i] = 0;
         modeSens[selectPlan][i] = 0;
-        
+        usedSens[selectPlan][i] = 0;
+                
       }
 
     delay(50);

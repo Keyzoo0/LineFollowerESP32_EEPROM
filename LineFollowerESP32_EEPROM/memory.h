@@ -95,7 +95,6 @@ typedef struct {
     uint8_t saveIdx[VAL_INDEX];
     uint8_t savelogic[VAL_INDEX];
     uint8_t savesensLogIdx[VAL_INDEX];
-    uint8_t savetrigW[VAL_INDEX];
     uint8_t savespdR[VAL_INDEX];
     uint8_t savespdL[VAL_INDEX];
     uint8_t saveidelayH[VAL_INDEX];  // idelay High 
@@ -106,7 +105,6 @@ typedef struct {
     uint8_t savetimerBL[VAL_INDEX];  // TB Low
     uint8_t savespeedA[VAL_INDEX];
     uint8_t savespeedB[VAL_INDEX];
-    uint8_t saveclrLine[VAL_INDEX];
     uint8_t saveprofilePID[VAL_INDEX];
     uint8_t saveModeTIM[VAL_INDEX];
     uint8_t saveModeSens[VAL_INDEX];
@@ -156,7 +154,6 @@ byte countIdx;
 byte idx[VAL_PLAN][VAL_INDEX];
 byte logic[VAL_PLAN][VAL_INDEX];
 byte sensLogIdx[VAL_PLAN][VAL_INDEX];
-byte trigW[VAL_PLAN][VAL_INDEX];
 byte spdR[VAL_PLAN][VAL_INDEX];
 byte spdL[VAL_PLAN][VAL_INDEX];
 int16_t idelay[VAL_PLAN][VAL_INDEX];
@@ -164,7 +161,6 @@ int16_t timerA[VAL_PLAN][VAL_INDEX];
 int16_t timerB[VAL_PLAN][VAL_INDEX];
 int16_t speedA[VAL_PLAN][VAL_INDEX];
 int16_t speedB[VAL_PLAN][VAL_INDEX];
-byte clrLine[VAL_PLAN][VAL_INDEX];
 byte pidProfile[VAL_PLAN][VAL_INDEX];
 byte modeTIM[VAL_PLAN][VAL_INDEX];
 byte modeSens[VAL_PLAN][VAL_INDEX];
@@ -204,7 +200,6 @@ void saveAllPlans() {
             Plan[planIndex].saveIdx[i] = idx[planIndex][i];
             Plan[planIndex].savelogic[i] = logic[planIndex][i];
             Plan[planIndex].savesensLogIdx[i] = sensLogIdx[planIndex][i];
-            Plan[planIndex].savetrigW[i] = trigW[planIndex][i];
             Plan[planIndex].savespdR[i] = spdR[planIndex][i];
             Plan[planIndex].savespdL[i] = spdL[planIndex][i];
             Plan[planIndex].saveidelayH[i] = idelay[planIndex][i] >> 8;
@@ -215,7 +210,6 @@ void saveAllPlans() {
             Plan[planIndex].savetimerBL[i] = timerB[planIndex][i] & 0x00ff;
             Plan[planIndex].savespeedA[i] = speedA[planIndex][i];
             Plan[planIndex].savespeedB[i] = speedB[planIndex][i];
-            Plan[planIndex].saveclrLine[i] = clrLine[planIndex][i];
             Plan[planIndex].saveprofilePID[i] = pidProfile[planIndex][i];
             Plan[planIndex].saveModeTIM[i] = modeTIM[planIndex][i];
             Plan[planIndex].saveModeSens[i] = modeSens[planIndex][i]; 
@@ -237,7 +231,6 @@ void readIdx() {
             idx[planIndex][i] = Plan[planIndex].saveIdx[i];
             logic[planIndex][i] = Plan[planIndex].savelogic[i];
             sensLogIdx[planIndex][i] = Plan[planIndex].savesensLogIdx[i];
-            trigW[planIndex][i] = Plan[planIndex].savetrigW[i];
             spdR[planIndex][i] = Plan[planIndex].savespdR[i];
             spdL[planIndex][i] = Plan[planIndex].savespdL[i];
             idelay[planIndex][i] = (Plan[planIndex].saveidelayH[i] << 8) | Plan[planIndex].saveidelayL[i];
@@ -245,7 +238,6 @@ void readIdx() {
             timerB[planIndex][i] = (Plan[planIndex].savetimerBH[i] << 8) | Plan[planIndex].savetimerBL[i];
             speedA[planIndex][i] = Plan[planIndex].savespeedA[i];
             speedB[planIndex][i] = Plan[planIndex].savespeedB[i];
-            clrLine[planIndex][i] = Plan[planIndex].saveclrLine[i];
             pidProfile[planIndex][i] = Plan[planIndex].saveprofilePID[i];
             modeTIM[planIndex][i] = Plan[planIndex].saveModeTIM[i];
             modeSens[planIndex][i]= Plan[planIndex].saveModeSens[i] ; 

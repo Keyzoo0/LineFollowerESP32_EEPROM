@@ -125,7 +125,6 @@ void CMIDX() {
           idx[x2][i] = idx[x1][i];
           logic[x2][i] = logic[x1][i];
           sensLogIdx[x2][i] = sensLogIdx[x1][i];
-          trigW[x2][i] = trigW[x1][i];
           spdR[x2][i] = spdR[x1][i];
           spdL[x2][i] = spdL[x1][i];
           idelay[x2][i] = idelay[x1][i];
@@ -133,10 +132,10 @@ void CMIDX() {
           timerB[x2][i] = timerB[x1][i];
           speedA[x2][i] = speedA[x1][i];
           speedB[x2][i] = speedB[x1][i];
-          clrLine[x2][i] = clrLine[x1][i];
           pidProfile[x2][i] = pidProfile[x1][i];
           modeTIM[x2][i] = modeTIM[x1][i];
           modeSens[x2][i] = modeSens[x1][i];
+          usedSens[x2][i] = usedSens[x1][i];
 
           lcd_loading(5,  29 , i, true, false, false);
           lcd.display();
@@ -175,7 +174,6 @@ void CMIDX() {
           else sensLogIdx[x2][i] = sensLogIdx[x1][i];
           
 
-          trigW[x2][i] = trigW[x1][i];
           spdR[x2][i] = spdR[x1][i];
           spdL[x2][i] = spdL[x1][i];
           idelay[x2][i] = idelay[x1][i];
@@ -183,9 +181,10 @@ void CMIDX() {
           timerB[x2][i] = timerB[x1][i];
           speedA[x2][i] = speedA[x1][i];
           speedB[x2][i] = speedB[x1][i];
-          clrLine[x2][i] = clrLine[x1][i];
           pidProfile[x2][i] = pidProfile[x1][i];
           modeTIM[x2][i] = modeTIM[x1][i];
+          usedSens[x2][i] = usedSens[x1][i];
+          
           if(modeSens[x1][i] == 2 ) modeSens[x2][i] = 1;
           else if(modeSens[x1][i] == 1 ) modeSens[x2][i] = 2;
           else modeSens[x2][i] = modeSens[x1][i] ;

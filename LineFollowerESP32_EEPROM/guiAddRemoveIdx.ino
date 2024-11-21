@@ -13,7 +13,6 @@ void addRemoveIdx(byte plan , byte index){
         idx[plan][count+1] = idx[plan][count];
         logic[plan][count+1] = logic[plan][count];
         sensLogIdx[plan][count+1] = sensLogIdx[plan][count];
-        trigW[plan][count+1] = trigW[plan][count];
         spdR[plan][count+1] = spdR[plan][count];
         spdL[plan][count+1] = spdL[plan][count];
         idelay[plan][count+1] = idelay[plan][count];
@@ -21,15 +20,14 @@ void addRemoveIdx(byte plan , byte index){
         timerB[plan][count+1] = timerB[plan][count];
         speedA[plan][count+1] = speedA[plan][count];
         speedB[plan][count+1] = speedB[plan][count];
-        clrLine[plan][count+1] = clrLine[plan][count];
         pidProfile[plan][count+1] = pidProfile[plan][count];
         modeTIM[plan][count+1] = modeTIM[plan][count];
         modeSens[plan][count+1] = modeSens[plan][count];
+        usedSens[plan][count+1] = usedSens[plan][count];
       }
         idx[plan][index] = 0;
         logic[plan][index] = 0;
         sensLogIdx[plan][index] = 1;
-        trigW[plan][index] = 0;
         spdR[plan][index] = 0;
         spdL[plan][index] = 0;
         idelay[plan][index] = 0;
@@ -37,10 +35,10 @@ void addRemoveIdx(byte plan , byte index){
         timerB[plan][index] = 0;
         speedA[plan][index] = 0;
         speedB[plan][index] = 0;
-        clrLine[plan][index] = 0;
         pidProfile[plan][index] = 0;
         modeTIM[plan][index] = 0;
         modeSens[plan][index] = 0;  
+        usedSens[plan][index] = 0;  
         lcd_char(1 , 50 , 25 , "Added!" , true , true , true );
         saveAll();
         delay(250);
@@ -56,7 +54,6 @@ void addRemoveIdx(byte plan , byte index){
         idx[plan][count] = idx[plan][count+1];
         logic[plan][count] = logic[plan][count+1];
         sensLogIdx[plan][count] = sensLogIdx[plan][count+1];
-        trigW[plan][count] = trigW[plan][count+1];
         spdR[plan][count] = spdR[plan][count+1];
         spdL[plan][count] = spdL[plan][count+1];
         idelay[plan][count] = idelay[plan][count+1];
@@ -64,15 +61,14 @@ void addRemoveIdx(byte plan , byte index){
         timerB[plan][count] = timerB[plan][count+1];
         speedA[plan][count] = speedA[plan][count+1];
         speedB[plan][count] = speedB[plan][count+1];
-        clrLine[plan][count] = clrLine[plan][count+1];
         pidProfile[plan][count] = pidProfile[plan][count+1];
         modeTIM[plan][count] = modeTIM[plan][count+1];
         modeSens[plan][count] = modeSens[plan][count+1];
+        usedSens[plan][count] = usedSens[plan][count+1];
       }
         idx[plan][VAL_INDEX-1] = 0;
         logic[plan][VAL_INDEX-1] = 0;
         sensLogIdx[plan][VAL_INDEX-1] = 1;
-        trigW[plan][VAL_INDEX-1] = 0;
         spdR[plan][VAL_INDEX-1] = 0;
         spdL[plan][VAL_INDEX-1] = 0;
         idelay[plan][VAL_INDEX-1] = 0;
@@ -80,10 +76,10 @@ void addRemoveIdx(byte plan , byte index){
         timerB[plan][VAL_INDEX-1] = 0;
         speedA[plan][VAL_INDEX-1] = 0;
         speedB[plan][VAL_INDEX-1] = 0;
-        clrLine[plan][VAL_INDEX-1] = 0;
         pidProfile[plan][VAL_INDEX-1] = 0;
         modeTIM[plan][VAL_INDEX-1] = 0;
         modeSens[plan][VAL_INDEX-1] = 0;
+        usedSens[plan][VAL_INDEX-1] = 0;
         lcd_char(1 , 50 , 25 , "Removed!" , true , true , true );
         saveAll();
         delay(250);
