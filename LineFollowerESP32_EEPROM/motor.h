@@ -1,16 +1,15 @@
+#ifndef MOTOR_H
+#define MOTOR_H
 
-#define RESOULTION 8
-#define FREQUENCY 15000
+// PWM LEDC — API Arduino-ESP32 core v3.x (pin-based, tanpa channel)
+#define RESOLUTION 8
+#define FREQUENCY  15000
 
-//motor kiri
+// motor kiri
 #define Motor1_A 26
 #define Motor1_B 27
-//motor kanan
+// motor kanan
 #define Motor2_A 17
 #define Motor2_B 16
 
-#define Motor1_A_CH 0
-#define Motor1_B_CH 1
-#define Motor2_A_CH 2
-#define Motor2_B_CH 3
-
+#endif // MOTOR_H

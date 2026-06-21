@@ -72,9 +72,9 @@ void headUp(bool clr , bool show) {
   if (show)lcd.display();
 }
 
-void headUpIdx(bool clr , bool show) {
+void headUpIdx(bool clr , bool show, int curIdx) {
   if (clr) lcd.clearDisplay();
-  sprintf(buff, "Set P:%d-Idx:%02d", plan + 1, countIdx);
+  sprintf(buff, "Set P:%d-Idx:%02d", plan + 1, curIdx);
   lcd_char(1, 1, 1, buff, true, false, false);
   lcd.drawLine(0, 12, 128, 12, SH110X_WHITE);
   if (show)lcd.display();
